@@ -1,0 +1,15 @@
+---
+title: "Lab2"
+author: "Diana DeWald, Eliott Doyle"
+date: "1/24/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(fivethirtyeight)
+library(fivethirtyeightdata)
+```
+
+
