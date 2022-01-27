@@ -4,7 +4,7 @@ author: "Eliott Doyle, Diana DeWald"
 date: "1/24/2022"
 output: pdf_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -80,3 +80,47 @@ google_trends %>%
   scale_fill_viridis()
 
 ```
+
+### >> Create a data frame (using tibble() or data.frame()) that includes the dates that each hurricane made landfall. Annotate one of your first two plots to include these reference points with vertical lines (Hint: use geom_vline(), specifying the data source for this layer as this new dataset). You do not have to include text annotations - just the vertical lines, but if you would like to try, look into geom_text() or geom_label(). The hurricanes made landfall on (approximately) the following days:
+* Harvey: August 25, 2017
+* Irma: September 10, 2017
+* Jose: Did not make landfall
+* Maria: September 20, 2017
+
+```{r q1.4, echo = FALSE, warning = FALSE, message = FALSE}
+# creating the dataframe
+Hurricane <- c("Harvey", "Irma", "Jose", "Maria")
+date <- c("2017-08-25", "2017-09-10", "NA", "2017-09-20")
+landfall_dates <- data_frame(name, date)
+landfall_dates$date <- as.Date(landfall_dates$date)
+#View(landfall_dates)
+
+# modifying the line graph from q1.1
+google_trends %>%
+  pivot_longer(c("hurricane_harvey_us", "hurricane_irma_us", "hurricane_maria_us", "hurricane_jose_us"),
+               names_to = "Hurricane", 
+               values_to = "Searches") %>%
+  ggplot(aes(date, Searches)) +
+  geom_smooth(aes(color = Hurricane), se = FALSE, size = 2) +
+  theme_classic() +
+  labs(title = "U.S. Google trends for Hurricanes", subtitle = "Aug.-Sep. 2017", x = "Date", y = "Search Frequency (thousands)")+
+  scale_color_manual(labels = c("Harvey", "Irma", "Maria", "Jose"),  values = c("darkcyan", "plum4", "lightsalmon", "darkseagreen4")) +
+  guides(color=guide_legend("Hurricane")) +
+  geom_vline(data = landfall_dates, aes(xintercept = date))
+```
+### Make any final modifications to the plot you’d like to communicate the information as effectively as possible
+
+```{r q1.5, echo = FALSE, warning = FALSE, message = FALSE}
+google_trends %>%
+  pivot_longer(c("hurricane_harvey_us", "hurricane_irma_us", "hurricane_maria_us", "hurricane_jose_us"),
+               names_to = "Hurricane", 
+               values_to = "Searches") %>%
+  ggplot(aes(date, Searches)) +
+  geom_smooth(aes(color = Hurricane), se = FALSE, size = 2) +
+  theme_classic(base_size = 14) +
+  labs(title = "U.S. Google trends for Hurricanes", subtitle = "Aug.-Sep. 2017", x = "Date", y = "Search Frequency (thousands)")+
+  scale_color_manual(labels = c("Harvey", "Irma", "Maria", "Jose"),  values = c("darkcyan", "plum4", "lightsalmon", "darkseagreen4")) +
+  guides(color=guide_legend("Hurricane")) +
+  geom_vline(data = landfall_dates, aes(xintercept = date), size = 1.3)
+```
+
