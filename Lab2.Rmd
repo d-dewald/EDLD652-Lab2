@@ -29,7 +29,7 @@ google_trends %>%
                names_to = "Hurricane", 
                values_to = "Searches") %>%
   ggplot(aes(date, Searches)) +
-  geom_smooth(aes(color = Hurricane), se = FALSE, size = 2) +
+  geom_line(aes(color = Hurricane), se = FALSE, size = 2) +
   theme_classic() +
   labs(title = "U.S. Google trends for Hurricanes", subtitle = "Aug.-Sep. 2017", x = "Date", y = "Search Frequency (thousands)")+
   scale_color_manual(labels = c("Harvey", "Irma", "Maria", "Jose"),  values = c("darkcyan", "plum4", "lightsalmon", "darkseagreen4")) +
@@ -91,20 +91,24 @@ google_trends %>%
 # creating the dataframe
 Hurricane <- c("Harvey", "Irma", "Jose", "Maria")
 date <- c("2017-08-25", "2017-09-10", "NA", "2017-09-20")
-landfall_dates <- data_frame(name, date)
+landfall_dates <- data_frame(Hurricane, date)
 landfall_dates$date <- as.Date(landfall_dates$date)
 #View(landfall_dates)
 
 # modifying the line graph from q1.1
 google_trends %>%
-  pivot_longer(c("hurricane_harvey_us", "hurricane_irma_us", "hurricane_maria_us", "hurricane_jose_us"),
+  rename(harvey = hurricane_harvey_us,
+         irma = hurricane_irma_us,
+         maria = hurricane_maria_us, 
+         jose = hurricane_jose_us) %>% 
+  pivot_longer(c("Harvey", "Irma", "Maria", "Jose"),
                names_to = "Hurricane", 
                values_to = "Searches") %>%
   ggplot(aes(date, Searches)) +
-  geom_smooth(aes(color = Hurricane), se = FALSE, size = 2) +
+  geom_line(aes(color = Hurricane), se = FALSE, size = 2) +
   theme_classic() +
   labs(title = "U.S. Google trends for Hurricanes", subtitle = "Aug.-Sep. 2017", x = "Date", y = "Search Frequency (thousands)")+
-  scale_color_manual(labels = c("Harvey", "Irma", "Maria", "Jose"),  values = c("darkcyan", "plum4", "lightsalmon", "darkseagreen4")) +
+  scale_color_manual(values = c("darkcyan", "plum4", "lightsalmon", "darkseagreen4")) +
   guides(color=guide_legend("Hurricane")) +
   geom_vline(data = landfall_dates, aes(xintercept = date))
 ```
@@ -112,15 +116,20 @@ google_trends %>%
 
 ```{r q1.5, echo = FALSE, warning = FALSE, message = FALSE}
 google_trends %>%
-  pivot_longer(c("hurricane_harvey_us", "hurricane_irma_us", "hurricane_maria_us", "hurricane_jose_us"),
+  rename(harvey = hurricane_harvey_us,
+         irma = hurricane_irma_us,
+         maria = hurricane_maria_us, 
+         jose = hurricane_jose_us) %>% 
+  pivot_longer(c("Harvey", "Irma", "Maria", "Jose"),
                names_to = "Hurricane", 
                values_to = "Searches") %>%
   ggplot(aes(date, Searches)) +
-  geom_smooth(aes(color = Hurricane), se = FALSE, size = 2) +
-  theme_classic(base_size = 14) +
+  geom_line(aes(color = Hurricane), se = FALSE, size = 2) +
+  theme_classic() +
   labs(title = "U.S. Google trends for Hurricanes", subtitle = "Aug.-Sep. 2017", x = "Date", y = "Search Frequency (thousands)")+
-  scale_color_manual(labels = c("Harvey", "Irma", "Maria", "Jose"),  values = c("darkcyan", "plum4", "lightsalmon", "darkseagreen4")) +
+  scale_color_manual(values = c("darkcyan", "plum4", "lightsalmon", "darkseagreen4")) +
   guides(color=guide_legend("Hurricane")) +
-  geom_vline(data = landfall_dates, aes(xintercept = date), size = 1.3)
+  geom_vline(data = landfall_dates, aes(xintercept = date, color = Hurricane), size = 1.3)
+
 ```
 
