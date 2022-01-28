@@ -12,6 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(fivethirtyeight)
 library(fivethirtyeightdata)
+library(dplyr)
+library(RColorBrewer)
+library(ggeasy)
 
 # View(google_trends)
 
@@ -125,11 +128,80 @@ google_trends %>%
                values_to = "Searches") %>%
   ggplot(aes(date, Searches)) +
   geom_line(aes(color = Hurricane), se = FALSE, size = 2) +
-  theme_classic() +
+  theme_classic(base_size = 14) +
   labs(title = "U.S. Google trends for Hurricanes", subtitle = "Aug.-Sep. 2017", x = "Date", y = "Search Frequency (thousands)")+
   scale_color_manual(values = c("darkcyan", "plum4", "lightsalmon", "darkseagreen4")) +
   guides(color=guide_legend("Hurricane")) +
   geom_vline(data = landfall_dates, aes(xintercept = date, color = Hurricane), size = 1.3)
 
+```
+
+
+
+
+
+
+
+
+
+
+## 3. Use the comic_characters dataset to visualize the proportion of different genders using at least three different methods. With your final visualization, make any additional modifications you think would help reduce the cognitive load necessary to comprehend the figure.
+
+```{r q3.1, echo = FALSE, warning = FALSE, message = FALSE}
+# View(comic_characters)
+
+#basic bar chart
+gender1 <- comic_characters %>% 
+  ggplot(aes(x = sex)) +
+  geom_bar() +
+  theme_bw() +
+  coord_flip()
+gender1
+
+#pie chart
+gender2 <- comic_characters %>% 
+  group_by(sex) %>%
+  summarise(sex_totals = n()) %>%
+  mutate(sex_percent = sex_totals / sum(sex_totals) * 100) %>%
+  select(sex, sex_percent) %>%
+  ggplot(aes(x = "", y = sex_percent, fill = sex)) +
+  geom_col() +
+  coord_polar(theta = "y")
+gender2
+
+#bar chart of sex by number of appearances
+gender3 <- comic_characters %>% 
+  ggplot(aes(x = sex, y = appearances)) +
+  geom_col() +
+  theme_bw() +
+  coord_flip()
+gender3
+```
+#### The three charts are number of characters by sex in bar chart form, percentage of characters by sex in pie chart form, and number of appearances by character sex. I like the first one, so I will clean that one up.
+
+
+```{r q3.2, echo = FALSE, warning = FALSE, message = FALSE}
+#making sex a factor and recoding the levels to make the labels nicer
+comic_characters$sex <- as.factor(comic_characters$sex)
+comic_characters$sex <- recode(comic_characters$sex, 
+                               "Male Characters" = 'Male',
+                               "Female Characters" = 'Female',
+                               "Agender Characters" = 'Agender',
+                               "Genderless Characters" = 'Genderless',
+                               "Genderfluid Characters" = 'Genderfluid',
+                               "Transgender Characters" = 'Transgender')
+
+gender1 <- comic_characters %>% 
+  ggplot(aes(x = fct_infreq(sex), fill = sex)) +
+  geom_bar(color = "black", alpha = .7) +
+  theme_bw(base_size = 14)+
+  scale_fill_brewer(palette="Set3") +
+  labs(title = "Character Gender Frequency in Comic Books",
+       x = "Character Gender",
+       y = "Frequency") +
+  theme(legend.position="none") +
+  coord_flip() +
+  ggeasy::easy_center_title()
+gender1
 ```
 
