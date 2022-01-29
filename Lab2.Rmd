@@ -2,8 +2,10 @@
 title: "Lab2"
 author: "Eliott Doyle, Diana DeWald"
 date: "1/24/2022"
-output: pdf_document
-editor_options: 
+output:
+  html_document:
+    df_print: paged
+editor_options:
   chunk_output_type: console
 ---
 
